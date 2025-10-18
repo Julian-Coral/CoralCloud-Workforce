@@ -1,0 +1,28 @@
+name: Generate Finance Summary
+on:
+  schedule:
+    - cron: "0 14 * * 5"  # 18:00 GST = 14:00 UTC
+  workflow_dispatch:
+
+jobs:
+  generate-finance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build finance report
+        run: |
+          mkdir -p reports
+          dt=$(date -u)
+          sed "s/{{DATE_TIME}}/$dt/g" reports/templates/Finance_Report.md > reports/Finance_Report.md
+          echo "" >> reports/Finance_Report.md
+          echo "### Finance Tracker (raw)" >> reports/Finance_Report.md
+          cat data/Finance_Tracker.csv >> reports/Finance_Report.md
+
+      - name: Commit & Push
+        run: |
+          git config --global user.name "CoralCloud Bot"
+          git config --global user.email "bot@coralandcloud.com"
+          git add reports/Finance_Report.md
+          git commit -m "Automated: Weekly Finance Report"
+          git push

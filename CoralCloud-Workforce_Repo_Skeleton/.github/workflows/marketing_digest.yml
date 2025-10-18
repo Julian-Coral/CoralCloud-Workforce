@@ -1,0 +1,28 @@
+name: Generate Marketing Digest
+on:
+  schedule:
+    - cron: "0 5 * * 6"  # Saturday 09:00 GST = 05:00 UTC
+  workflow_dispatch:
+
+jobs:
+  marketing-digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build engagement summary
+        run: |
+          mkdir -p reports
+          dt=$(date -u)
+          sed "s/{{DATE_TIME}}/$dt/g" reports/templates/Engagement_Summary.md > reports/Engagement_Summary.md
+          echo "" >> reports/Engagement_Summary.md
+          echo "### Engagement Tracker (raw)" >> reports/Engagement_Summary.md
+          cat data/Engagement_Tracker.csv >> reports/Engagement_Summary.md
+
+      - name: Commit & Push
+        run: |
+          git config --global user.name "CoralCloud Bot"
+          git config --global user.email "bot@coralandcloud.com"
+          git add reports/Engagement_Summary.md
+          git commit -m "Automated: Weekly Marketing Digest"
+          git push

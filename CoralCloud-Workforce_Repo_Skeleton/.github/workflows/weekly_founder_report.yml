@@ -1,0 +1,29 @@
+name: Generate Weekly Founder Report
+on:
+  schedule:
+    - cron: "0 5 * * 1"   # 09:00 GST = 05:00 UTC
+  workflow_dispatch:
+
+jobs:
+  generate-report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Build report
+        run: |
+          mkdir -p reports
+          dt=$(date -u)
+          sed "s/{{DATE_TIME}}/$dt/g" reports/templates/Weekly_Founder_Report.md > reports/Weekly_Founder_Report.md
+          echo "" >> reports/Weekly_Founder_Report.md
+          echo "### Raw KPI Data" >> reports/Weekly_Founder_Report.md
+          cat data/Agent_Performance_Tracker.csv >> reports/Weekly_Founder_Report.md
+
+      - name: Commit & Push
+        run: |
+          git config --global user.name "CoralCloud Bot"
+          git config --global user.email "bot@coralandcloud.com"
+          git add reports/Weekly_Founder_Report.md
+          git commit -m "Automated: Weekly Founder Report"
+          git push

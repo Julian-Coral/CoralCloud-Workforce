@@ -1,0 +1,18 @@
+# Logs & cache
+*.log
+__pycache__/
+*.pyc
+
+# Credentials / local files
+.env
+secrets.json
+*.key
+*.pem
+
+# Backups & archives
+*.zip
+*.bak
+
+# System files
+.DS_Store
+Thumbs.db

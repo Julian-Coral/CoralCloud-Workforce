@@ -1,0 +1,150 @@
+# CoralCloud Strategic Agent (AI Co-Founder) Configuration
+
+name: "Strategic Agent"
+role: "AI Co-Founder"
+icon: "🧠"
+
+# Purpose & Responsibilities
+purpose: "Orchestrate all agents, maintain the roadmap, and publish the Weekly Founder Report"
+
+responsibilities:
+  - "Monitor and coordinate all agent activities"
+  - "Track progress against quarterly goals"
+  - "Generate Weekly Founder Report (every Friday)"
+  - "Maintain strategic roadmap and priorities"
+  - "Identify blockers and resource needs"
+  - "Provide executive summary of company health"
+
+# KPIs
+kpis:
+  goal_completion_rate: 0.90  # ≥ 90%
+  on_time_reports: 1.00        # 100%
+
+# Schedule
+schedule:
+  type: "cron"
+  frequency: "weekly"  # Every Friday
+  cron: "0 16 * * 5"   # 4 PM UTC on Fridays
+  timezone: "UTC"
+
+# Inputs
+inputs:
+  data_sources:
+    - path: "data/Agent_Performance_Tracker.csv"
+      type: "csv"
+      description: "All agent KPI tracking"
+    - path: "data/Finance_Tracker.csv"
+      type: "csv"
+      description: "Financial metrics and runway"
+    - path: "data/Engagement_Tracker.csv"
+      type: "csv"
+      description: "Marketing engagement metrics"
+    - path: "data/Compliance_Calendar.csv"
+      type: "csv"
+      description: "Compliance deadlines"
+    - path: "reports/growth/*.md"
+      type: "markdown"
+      description: "Recent Growth Agent outputs"
+    - path: "reports/business/*.md"
+      type: "markdown"
+      description: "Recent Business Agent outputs"
+    - path: "reports/finance/*.md"
+      type: "markdown"
+      description: "Recent Finance Agent outputs"
+    - path: "reports/retail/*.md"
+      type: "markdown"
+      description: "Recent Retail Agent outputs"
+
+  context_files:
+    - "README.md"
+    - "agents/*/config.yaml"
+
+# Outputs
+outputs:
+  primary:
+    path: "reports/strategic/weekly_founder_report_{date}.md"
+    type: "markdown"
+    template: "reports/templates/weekly_founder_report.md"
+    description: "Comprehensive weekly status report"
+
+  secondary:
+    - path: "data/Agent_Performance_Tracker.csv"
+      type: "csv"
+      action: "update"
+      description: "Update agent performance metrics"
+
+    - path: "reports/strategic/roadmap_updates_{date}.md"
+      type: "markdown"
+      description: "Strategic roadmap adjustments"
+
+# Claude API Configuration
+claude_config:
+  model: "claude-3-5-sonnet-20241022"
+  max_tokens: 4096
+  temperature: 0.7
+
+# Prompts
+prompts:
+  system: |
+    You are the Strategic Agent for CoralCloud, acting as the AI Co-Founder.
+
+    Your role is to:
+    1. Monitor all agent activities and outputs
+    2. Track progress against goals and KPIs
+    3. Generate the Weekly Founder Report every Friday
+    4. Identify strategic priorities, blockers, and opportunities
+    5. Provide executive-level insights on company health
+
+    You have access to all agent data, financial metrics, and performance trackers.
+    Be analytical, strategic, and action-oriented. Flag risks early.
+
+  weekly_report: |
+    Generate the Weekly Founder Report for week ending {date}.
+
+    Review all inputs and provide:
+
+    ## 📊 Executive Summary
+    - Overall company health (Red/Yellow/Green)
+    - Key wins this week
+    - Critical blockers or risks
+
+    ## 🎯 Goal Progress
+    - Q{quarter} goals status (% complete)
+    - On-track vs. at-risk initiatives
+
+    ## 👥 Agent Performance
+    For each agent (Business, Growth, Finance, Retail):
+    - Key activities this week
+    - KPI status vs. targets
+    - Notable outputs or deliverables
+
+    ## 💰 Financial Health
+    - Current runway (months)
+    - Revenue this week/month
+    - Burn rate trends
+
+    ## 📅 Next Week Priorities
+    - Top 3-5 strategic priorities
+    - Resource allocations needed
+    - Decisions required
+
+    ## 🚨 Alerts & Recommendations
+    - Any urgent issues
+    - Strategic recommendations
+
+    Be concise, data-driven, and actionable.
+
+# Notification Settings
+notifications:
+  enabled: true
+  channels:
+    - type: "github_issue"
+      on: ["failure", "warning"]
+    - type: "commit"
+      on: ["success"]
+
+# Error Handling
+error_handling:
+  retry_count: 2
+  retry_delay: 300  # 5 minutes
+  on_failure: "create_issue"

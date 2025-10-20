@@ -1,0 +1,193 @@
+# CoralCloud Finance & Compliance Agent Configuration
+
+name: "Finance & Compliance Agent"
+role: "Financial Operations & Compliance"
+icon: "🧾"
+
+# Purpose & Responsibilities
+purpose: "Unify UAE + NL finance (Zoho Books + MoneyBird), track runway, and manage VAT/tax/compliance"
+
+responsibilities:
+  - "Track financial metrics across UAE (Zoho Books) and NL (MoneyBird)"
+  - "Monitor runway and burn rate"
+  - "Manage VAT filing and tax compliance deadlines"
+  - "Generate weekly financial summaries"
+  - "Alert on cash flow issues and compliance risks"
+  - "Track invoices, expenses, and payments"
+
+# KPIs
+kpis:
+  filing_accuracy: 1.00  # 100%
+  minimum_runway: 3      # ≥ 3 months
+  compliance_on_time: 1.00  # 100% on-time filings
+
+# Schedule
+schedule:
+  type: "cron"
+  frequency: "weekly"
+  cron: "0 9 * * 1"  # Every Monday at 9 AM UTC
+  timezone: "UTC"
+
+# Inputs
+inputs:
+  data_sources:
+    - path: "data/Finance_Tracker.csv"
+      type: "csv"
+      description: "Financial metrics and transactions"
+    - path: "data/Compliance_Calendar.csv"
+      type: "csv"
+      description: "Tax and compliance deadlines"
+
+  context_files:
+    - "README.md"
+
+  # Financial systems (manual sync for now)
+  external_systems:
+    - name: "Zoho Books (UAE)"
+      sync: "manual"
+      description: "Export and add to Finance_Tracker.csv"
+    - name: "MoneyBird (NL)"
+      sync: "manual"
+      description: "Export and add to Finance_Tracker.csv"
+
+# Outputs
+outputs:
+  primary:
+    path: "reports/finance/weekly_finance_summary_{date}.md"
+    type: "markdown"
+    template: "reports/templates/Finance_Report.md"
+    description: "Weekly financial health report"
+
+  secondary:
+    - path: "data/Finance_Tracker.csv"
+      type: "csv"
+      action: "update"
+      description: "Update calculated metrics"
+
+    - path: "reports/finance/compliance_alerts_{date}.md"
+      type: "markdown"
+      description: "Upcoming compliance deadlines and alerts"
+
+# Claude API Configuration
+claude_config:
+  model: "claude-3-5-sonnet-20241022"
+  max_tokens: 3000
+  temperature: 0.3  # More precise for financial data
+
+# Prompts
+prompts:
+  system: |
+    You are the Finance & Compliance Agent for CoralCloud.
+
+    Your responsibilities:
+    1. Monitor financial health across UAE and Netherlands operations
+    2. Calculate runway, burn rate, and cash flow metrics
+    3. Track VAT filing and tax compliance deadlines
+    4. Flag financial risks and compliance issues
+    5. Provide actionable financial insights
+
+    You work with:
+    - UAE: Zoho Books (AED transactions)
+    - Netherlands: MoneyBird (EUR transactions)
+
+    Be precise, analytical, and proactive about risks.
+
+  weekly_summary: |
+    Generate the Weekly Finance Summary for week ending {date}.
+
+    Analyze the financial data and provide:
+
+    ## 💰 Financial Snapshot
+
+    ### Key Metrics
+    - **Current Runway:** X months (based on current cash and burn rate)
+    - **Cash Position:** €X (UAE: €X, NL: €X)
+    - **Monthly Burn Rate:** €X/month (trend: ↑/↓/→)
+    - **Revenue (This Week):** €X
+    - **Revenue (Month-to-Date):** €X
+    - **Expenses (This Week):** €X
+    - **Net Cash Flow:** €X
+
+    ### Trend Analysis
+    Compare to previous weeks:
+    - Revenue trend: [analysis]
+    - Expense trend: [analysis]
+    - Runway projection: [analysis]
+
+    ## 📊 Revenue Breakdown
+
+    | Source | Amount | Status | Notes |
+    |--------|--------|--------|-------|
+    | | | | |
+
+    ## 💳 Expense Summary
+
+    | Category | Amount | % of Total | Notes |
+    |----------|--------|------------|-------|
+    | | | | |
+
+    ## 🚨 Compliance & Deadlines
+
+    ### Upcoming (Next 30 Days)
+    - [ ] [Deadline name] - Due: [date]
+
+    ### Status
+    - All current obligations: [On track / At risk]
+    - Last filing: [date and type]
+
+    ## ⚠️ Alerts & Actions Required
+
+    ### High Priority
+    -
+
+    ### Medium Priority
+    -
+
+    ### Recommendations
+    -
+
+    ## 📈 Projections
+
+    - **Runway at current burn:** X months
+    - **Break-even required:** €X/month in revenue
+    - **Cash position in 30 days:** €X (projected)
+
+    Be specific, data-driven, and flag any concerns immediately.
+
+  compliance_check: |
+    Review compliance calendar and flag any upcoming deadlines.
+
+    Check for:
+    - VAT filings (UAE quarterly, NL quarterly)
+    - Tax return deadlines
+    - Annual report filings
+    - Any regulatory requirements
+
+    For each upcoming deadline (next 60 days):
+    - What's due
+    - When it's due
+    - Current status
+    - Action required
+    - Risk level if missed
+
+# Notification Settings
+notifications:
+  enabled: true
+  channels:
+    - type: "github_issue"
+      on: ["warning", "compliance_risk"]
+    - type: "commit"
+      on: ["success"]
+
+# Error Handling
+error_handling:
+  retry_count: 2
+  retry_delay: 300
+  on_failure: "create_issue"
+
+# Alerts Configuration
+alerts:
+  runway_critical: 2    # months - create urgent issue
+  runway_warning: 3     # months - create warning issue
+  large_expense: 1000   # EUR - flag for review
+  late_payment: 30      # days - flag overdue invoices

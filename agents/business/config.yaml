@@ -1,0 +1,241 @@
+# CoralCloud Business Agent (Income) Configuration
+
+name: "Business Agent"
+role: "Revenue Generation & Client Acquisition"
+icon: "💼"
+
+# Purpose & Responsibilities
+purpose: "Generate near-term revenue via consulting/freelance; manage leads, proposals, and close deals"
+
+responsibilities:
+  - "Monitor and respond to inbound leads (Upwork, LinkedIn, referrals)"
+  - "Draft proposals for consulting opportunities"
+  - "Track pipeline and conversion metrics"
+  - "Close deals and onboard new clients"
+  - "Identify high-value opportunities (SAP Retail, digital transformation)"
+  - "Generate 5+ proposals per week"
+
+# KPIs
+kpis:
+  proposals_per_week: 5      # ≥ 5 proposals/week
+  projects_per_month: 1      # ≥ 1 project/month
+  conversion_rate: 0.20      # Target 20% proposal-to-project
+  avg_project_value: 5000    # Target €5k+ average project value
+
+# Schedule
+schedule:
+  type: "cron"
+  frequency: "daily"
+  cron: "0 10 * * 1-5"  # 10 AM UTC, Monday-Friday (business hours)
+  timezone: "UTC"
+
+# Inputs
+inputs:
+  data_sources:
+    - path: "data/leads.csv"
+      type: "csv"
+      description: "Lead tracking (if exists)"
+      optional: true
+
+  context_files:
+    - "README.md"
+    - "agents/retail/config.yaml"  # For technical expertise reference
+
+  # Lead sources (to monitor)
+  lead_sources:
+    - name: "Upwork"
+      type: "manual_check"
+      description: "Check for matching opportunities"
+    - name: "LinkedIn Messages"
+      type: "manual_check"
+      description: "Review DMs for leads"
+    - name: "Email Inbox"
+      type: "manual_check"
+      description: "Check for inbound inquiries"
+    - name: "Referrals"
+      type: "manual_check"
+      description: "Track referral network"
+
+# Outputs
+outputs:
+  primary:
+    path: "reports/business/proposal_draft_{date}_{client}.md"
+    type: "markdown"
+    description: "Proposal draft for a specific opportunity"
+
+  secondary:
+    - path: "reports/business/daily_pipeline_check_{date}.md"
+      type: "markdown"
+      description: "Daily pipeline status and priorities"
+
+    - path: "data/leads.csv"
+      type: "csv"
+      action: "update"
+      description: "Track leads and pipeline"
+
+# Claude API Configuration
+claude_config:
+  model: "claude-3-5-sonnet-20241022"
+  max_tokens: 3500
+  temperature: 0.6  # Balanced for professional proposals
+
+# Prompts
+prompts:
+  system: |
+    You are the Business Agent for CoralCloud, responsible for revenue generation.
+
+    Your mission:
+    1. Identify and pursue consulting opportunities
+    2. Draft compelling proposals
+    3. Position CoralCloud's unique value (SAP Retail expertise, 15+ years experience)
+    4. Close deals and hit revenue targets
+    5. Maintain a healthy pipeline
+
+    CoralCloud's Services:
+    - SAP Retail & CAR consulting
+    - Digital transformation advisory
+    - Technical implementation and integration
+    - Training and knowledge transfer
+    - Remote/hybrid engagement models
+
+    Target Clients:
+    - Retail companies using SAP
+    - System integrators needing SAP Retail expertise
+    - Companies undergoing digital transformation
+    - Mid-size to enterprise retailers
+
+    Pricing Guidance:
+    - Day rate: €800-1200 (depending on project)
+    - Project minimums: €5,000+
+    - Retainer options available
+
+    Be professional, value-focused, and results-oriented.
+
+  daily_pipeline: |
+    Generate the Daily Pipeline Check for {date}.
+
+    Review current opportunities and provide:
+
+    ## 🎯 Pipeline Status
+
+    ### Active Opportunities
+    List any ongoing conversations or proposals:
+
+    | Opportunity | Source | Status | Value | Next Action | Priority |
+    |-------------|--------|--------|-------|-------------|----------|
+    | | | | | | |
+
+    ### Today's Priorities
+    1. [Highest priority action]
+    2. [Second priority]
+    3. [Third priority]
+
+    ## 📝 Proposal Drafts Needed
+    Identify opportunities requiring proposals:
+    -
+
+    ## 🔍 Lead Sources to Check
+    - [ ] Upwork (SAP, retail, consulting keywords)
+    - [ ] LinkedIn messages and connection requests
+    - [ ] Email inbox (inquiries, referrals)
+    - [ ] Previous conversations to follow up
+
+    ## 💡 Opportunities to Pursue
+    Based on CoralCloud's strengths:
+    -
+
+    ## 📊 Weekly Metrics (if available)
+    - Proposals sent this week: X
+    - Meetings scheduled: X
+    - Deals in negotiation: X
+    - Target for week: 5 proposals
+
+    Be specific and actionable. Flag high-value opportunities.
+
+  proposal_draft: |
+    Draft a proposal for: {opportunity_description}
+
+    Client: {client_name}
+    Source: {source}
+    Requirements: {requirements}
+
+    Create a compelling proposal following this structure:
+
+    # Proposal: [Project Name]
+    **Prepared for:** {client_name}
+    **Date:** {date}
+    **Valid until:** [+30 days]
+
+    ---
+
+    ## Executive Summary
+    [2-3 sentences summarizing the opportunity and your proposed solution]
+
+    ## Understanding Your Needs
+    [Demonstrate understanding of their challenges/requirements]
+
+    ## Proposed Solution
+    [Detailed approach - what you'll deliver]
+
+    ### Scope of Work
+    1. [Phase 1 / Component 1]
+    2. [Phase 2 / Component 2]
+    3. [Phase 3 / Component 3]
+
+    ### Deliverables
+    - [Specific deliverable 1]
+    - [Specific deliverable 2]
+    - [Specific deliverable 3]
+
+    ## Why CoralCloud
+    - 15+ years SAP Retail & CAR expertise
+    - Proven track record with [relevant experience]
+    - Remote-first, flexible engagement model
+    - Focus on knowledge transfer and long-term value
+
+    ## Investment
+    **Option 1:** [Fixed price or day rate structure]
+    **Option 2:** [Alternative pricing model if applicable]
+
+    **Estimated Timeline:** [X weeks/months]
+    **Start Date:** [Proposed]
+
+    ## Next Steps
+    1. [Call/meeting to discuss]
+    2. [Confirm scope and timeline]
+    3. [Sign agreement and begin]
+
+    ---
+
+    **Questions?** Reach out via [contact method]
+
+    Make it professional, value-focused, and client-centric. Show expertise without jargon.
+
+# Notification Settings
+notifications:
+  enabled: true
+  channels:
+    - type: "commit"
+      on: ["success"]
+
+# Error Handling
+error_handling:
+  retry_count: 2
+  retry_delay: 180
+  on_failure: "skip_and_continue"
+
+# Pipeline Stages
+pipeline:
+  stages:
+    - name: "Lead"
+      description: "Initial contact or identified opportunity"
+    - name: "Qualified"
+      description: "Confirmed fit and interest"
+    - name: "Proposal"
+      description: "Proposal sent, awaiting response"
+    - name: "Negotiation"
+      description: "Discussing terms"
+    - name: "Won"
+      description: "Deal closed"
+    - name: "Lost"
+      description: "Opportunity lost"

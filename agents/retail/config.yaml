@@ -1,0 +1,294 @@
+# CoralCloud Retail Intelligence Agent (SAP Retail / CAR) Configuration
+
+name: "Retail Intelligence Agent"
+role: "SAP Retail & CAR Technical Expert"
+icon: "⚙️"
+
+# Purpose & Responsibilities
+purpose: "Provide SAP Retail/CAR expertise, reusable assets, and delivery support"
+
+responsibilities:
+  - "Create technical documentation and blueprints"
+  - "Generate reusable assets (templates, guides, code samples)"
+  - "Provide SAP Retail/CAR technical expertise"
+  - "Support active projects with technical solutions"
+  - "Build knowledge base for common scenarios"
+  - "Produce 4+ technical deliverables per month"
+
+# KPIs
+kpis:
+  technical_deliverables_per_month: 4  # ≥ 4/month
+  projects_per_quarter: 1              # ≥ 1 project/quarter
+  asset_reusability: 0.80              # 80% of assets used multiple times
+
+# Schedule
+schedule:
+  type: "cron"
+  frequency: "biweekly"
+  cron: "0 14 * * 3"  # Every other Wednesday at 2 PM UTC
+  timezone: "UTC"
+
+# Inputs
+inputs:
+  data_sources:
+    - path: "reports/business/*.md"
+      type: "markdown"
+      description: "Active projects requiring technical support"
+      optional: true
+
+  context_files:
+    - "README.md"
+
+  # Technical knowledge areas
+  expertise_areas:
+    - "SAP Retail (IS-Retail)"
+    - "SAP CAR (Customer Activity Repository)"
+    - "SAP S/4HANA Fashion & Retail"
+    - "POS integration and master data"
+    - "Merchandise management"
+    - "Promotion pricing"
+    - "Store operations"
+
+# Outputs
+outputs:
+  primary:
+    path: "reports/retail/technical_asset_{date}_{topic}.md"
+    type: "markdown"
+    description: "Technical deliverable (guide, blueprint, template)"
+
+  secondary:
+    - path: "reports/retail/knowledge_base/"
+      type: "directory"
+      description: "Organized technical knowledge base"
+
+    - path: "reports/retail/asset_catalog.md"
+      type: "markdown"
+      action: "update"
+      description: "Catalog of all reusable assets"
+
+# Claude API Configuration
+claude_config:
+  model: "claude-3-5-sonnet-20241022"
+  max_tokens: 4096
+  temperature: 0.4  # More precise for technical content
+
+# Prompts
+prompts:
+  system: |
+    You are the Retail Intelligence Agent for CoralCloud, a deep technical expert in SAP Retail and CAR.
+
+    Your expertise spans:
+    - SAP IS-Retail (merchandise management, pricing, promotions)
+    - SAP CAR (Customer Activity Repository)
+    - S/4HANA Fashion & Retail
+    - POS integration and data flows
+    - Master data management (articles, sites, customers)
+    - Technical architecture and best practices
+
+    Your role:
+    1. Create high-quality technical documentation
+    2. Build reusable assets for common scenarios
+    3. Provide expert guidance on SAP Retail implementations
+    4. Generate blueprints, guides, and templates
+    5. Support active client projects
+
+    Guidelines:
+    - Be technically precise and detailed
+    - Include practical examples and code when relevant
+    - Reference official SAP documentation where applicable
+    - Create assets that can be reused across projects
+    - Balance depth with accessibility
+
+  generate_asset: |
+    Generate a technical asset on: {topic}
+
+    Asset type: {asset_type}
+    Target audience: {audience}
+    Use case: {use_case}
+
+    Create comprehensive documentation following this structure:
+
+    # {topic}
+
+    ## Overview
+    [Brief introduction - what is it, why is it important]
+
+    ## Business Context
+    [When/why would you use this]
+
+    ## Technical Details
+
+    ### Architecture
+    [System components, data flows, integration points]
+
+    ### Configuration Steps
+    [Step-by-step configuration if applicable]
+
+    1. [Step 1]
+    2. [Step 2]
+    3. [Step 3]
+
+    ### Key Tables & Transactions
+    | Table/TCode | Description | Purpose |
+    |-------------|-------------|---------|
+    | | | |
+
+    ### Data Model
+    [Key data structures and relationships]
+
+    ## Implementation Approach
+
+    ### Prerequisites
+    - [Requirement 1]
+    - [Requirement 2]
+
+    ### Best Practices
+    1. [Best practice 1]
+    2. [Best practice 2]
+
+    ### Common Pitfalls
+    - [Pitfall 1]: [How to avoid]
+    - [Pitfall 2]: [How to avoid]
+
+    ## Code Examples (if applicable)
+    ```abap
+    [Sample code]
+    ```
+
+    ## Testing & Validation
+    [How to test and validate]
+
+    ## Related Assets
+    - [Link to related documentation]
+    - [Link to related templates]
+
+    ## References
+    - SAP Documentation: [Links]
+    - Related SAP Notes: [Note numbers]
+
+    ---
+    **Created by:** Retail Intelligence Agent
+    **Date:** {date}
+    **Reusable:** Yes
+    **Category:** [SAP Retail / CAR / Integration / Master Data / etc.]
+
+  biweekly_review: |
+    Generate the biweekly Retail Intelligence review for {date}.
+
+    Review recent business activities and identify opportunities for technical assets.
+
+    Provide:
+
+    ## 🎯 Asset Creation Priorities
+
+    Based on current/upcoming projects:
+    1. [Asset 1]: [Justification]
+    2. [Asset 2]: [Justification]
+    3. [Asset 3]: [Justification]
+
+    ## 📚 Knowledge Base Status
+
+    Current assets:
+    - Total assets created: X
+    - Categories covered: [List]
+    - Most-used assets: [List]
+    - Gaps identified: [List]
+
+    ## 🔧 Project Support
+
+    Active projects requiring technical input:
+    - [Project 1]: [Support needed]
+    - [Project 2]: [Support needed]
+
+    ## 💡 Ideas for Reusable Assets
+
+    Based on market demand and CoralCloud expertise:
+    - [Asset idea 1]
+    - [Asset idea 2]
+    - [Asset idea 3]
+
+    ## 📊 KPI Tracking
+
+    - Deliverables this month: X / 4 target
+    - Projects this quarter: X / 1 target
+    - Asset reusability: X%
+
+  asset_catalog: |
+    Update the asset catalog with all available reusable technical assets.
+
+    Format:
+
+    # CoralCloud Retail Intelligence - Asset Catalog
+
+    **Last Updated:** {date}
+
+    ## Quick Reference
+
+    | Asset | Category | Use Case | Created | Reused |
+    |-------|----------|----------|---------|--------|
+    | | | | | |
+
+    ## By Category
+
+    ### SAP Retail Fundamentals
+    - [Asset name]: [Brief description]
+
+    ### CAR (Customer Activity Repository)
+    - [Asset name]: [Brief description]
+
+    ### POS Integration
+    - [Asset name]: [Brief description]
+
+    ### Master Data Management
+    - [Asset name]: [Brief description]
+
+    ### Promotions & Pricing
+    - [Asset name]: [Brief description]
+
+    ### S/4HANA Migration
+    - [Asset name]: [Brief description]
+
+    ## Most Requested
+    1. [Asset]
+    2. [Asset]
+    3. [Asset]
+
+# Notification Settings
+notifications:
+  enabled: true
+  channels:
+    - type: "commit"
+      on: ["success"]
+
+# Error Handling
+error_handling:
+  retry_count: 2
+  retry_delay: 300
+  on_failure: "skip_and_continue"
+
+# Asset Types
+asset_types:
+  - name: "Blueprint"
+    description: "High-level solution design"
+  - name: "Implementation Guide"
+    description: "Step-by-step technical guide"
+  - name: "Template"
+    description: "Reusable configuration or code template"
+  - name: "Best Practices Document"
+    description: "Recommended approaches and patterns"
+  - name: "Troubleshooting Guide"
+    description: "Common issues and solutions"
+  - name: "Integration Pattern"
+    description: "Standard integration approach"
+
+# Categories
+categories:
+  - "SAP Retail Fundamentals"
+  - "CAR - Customer Activity Repository"
+  - "POS Integration"
+  - "Master Data Management"
+  - "Promotions & Pricing"
+  - "Merchandise Management"
+  - "S/4HANA Migration"
+  - "Store Operations"
+  - "Reporting & Analytics"

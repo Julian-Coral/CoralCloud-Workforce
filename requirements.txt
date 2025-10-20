@@ -1,0 +1,11 @@
+# CoralCloud AI Workforce Dependencies
+
+# Claude API
+anthropic>=0.39.0
+
+# Configuration
+pyyaml>=6.0.1
+
+# Optional: For future enhancements
+# python-dotenv>=1.0.0
+# requests>=2.31.0

@@ -69,7 +69,7 @@ outputs:
 
 # Claude API Configuration
 claude_config:
-  model: "claude-3-5-sonnet-20241022"
+  model: "claude-sonnet-4-5-20250929"
   max_tokens: 1500  # Posts should be concise
   temperature: 0.8  # More creative for marketing content
 

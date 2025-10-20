@@ -132,7 +132,7 @@ class AgentRunner:
 
         try:
             message = self.client.messages.create(
-                model=claude_config.get('model', 'claude-3-5-sonnet-20241022'),
+                model=claude_config.get('model', 'claude-sonnet-4-5-20250929'),
                 max_tokens=claude_config.get('max_tokens', 4096),
                 temperature=claude_config.get('temperature', 0.7),
                 system=system_prompt,

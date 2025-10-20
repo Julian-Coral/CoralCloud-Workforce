@@ -99,8 +99,30 @@ class AgentRunner:
         prompt_template = self.config.get('prompts', {}).get(prompt_key, '')
 
         # Add date variables
-        kwargs['date'] = datetime.now().strftime('%Y-%m-%d')
-        kwargs['quarter'] = f"{(datetime.now().month - 1) // 3 + 1}"
+        now = datetime.now()
+        kwargs['date'] = now.strftime('%Y-%m-%d')
+        kwargs['quarter'] = f"{(now.month - 1) // 3 + 1}"
+        kwargs['day_of_week'] = now.strftime('%A')
+
+        # Add placeholders for optional variables if not provided
+        if 'recent_context' not in kwargs:
+            kwargs['recent_context'] = "No recent context available"
+        if 'opportunity_description' not in kwargs:
+            kwargs['opportunity_description'] = ""
+        if 'client_name' not in kwargs:
+            kwargs['client_name'] = ""
+        if 'source' not in kwargs:
+            kwargs['source'] = ""
+        if 'requirements' not in kwargs:
+            kwargs['requirements'] = ""
+        if 'topic' not in kwargs:
+            kwargs['topic'] = ""
+        if 'asset_type' not in kwargs:
+            kwargs['asset_type'] = ""
+        if 'audience' not in kwargs:
+            kwargs['audience'] = ""
+        if 'use_case' not in kwargs:
+            kwargs['use_case'] = ""
 
         return prompt_template.format(**kwargs)
 
@@ -211,25 +233,25 @@ def run_strategic() -> Dict[str, Any]:
 def run_growth() -> Dict[str, Any]:
     """Run the Growth Agent (Marketing/LinkedIn)"""
     runner = AgentRunner('growth')
-    return runner.run()
+    return runner.run('daily_post')
 
 
 def run_finance() -> Dict[str, Any]:
     """Run the Finance & Compliance Agent"""
     runner = AgentRunner('finance')
-    return runner.run()
+    return runner.run('weekly_summary')
 
 
 def run_business() -> Dict[str, Any]:
     """Run the Business Agent (Income/Consulting)"""
     runner = AgentRunner('business')
-    return runner.run()
+    return runner.run('daily_pipeline')
 
 
 def run_retail() -> Dict[str, Any]:
     """Run the Retail Intelligence Agent (SAP/CAR)"""
     runner = AgentRunner('retail')
-    return runner.run()
+    return runner.run('biweekly_review')
 
 
 def main():

@@ -72,6 +72,9 @@ jobs:
 
           [skip ci]" || echo "No changes to commit"
 
+          # Pull latest changes and rebase
+          git pull --rebase origin main || true
+
           git push
 
       - name: Create summary issue on failure

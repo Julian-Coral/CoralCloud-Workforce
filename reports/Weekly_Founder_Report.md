@@ -1,6 +1,6 @@
 ## Weekly Founder Report
 **Period:** {{WEEK_RANGE}}  
-**Generated:** Mon Apr  6 06:55:19 UTC 2026
+**Generated:** Mon Apr 13 07:14:08 UTC 2026
 
 ### Highlights
 -

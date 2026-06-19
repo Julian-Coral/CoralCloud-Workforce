@@ -1,5 +1,5 @@
 ## Weekly Finance Summary
-**Generated:** Fri Jun 12 16:39:33 UTC 2026
+**Generated:** Fri Jun 19 16:29:18 UTC 2026
 
 **Runway:** {{RUNWAY_MONTHS}} months  
 **Revenue (This Week):** {{REVENUE}}  

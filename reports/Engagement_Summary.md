@@ -1,6 +1,6 @@
 ## Weekly Engagement Summary
 **Period:** {{WEEK_RANGE}}  
-**Generated:** Sat Nov  7 11:37:01 UTC 2026
+**Generated:** Sat Nov 14 11:59:59 UTC 2026
 
 - Followers gained: {{FOLLOWERS_DELTA}}
 - Avg engagement: {{ENGAGEMENT_RATE}}%
